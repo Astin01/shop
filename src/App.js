@@ -1,25 +1,52 @@
 import "./App.css";
 import { Navbar, Container, Nav } from "react-bootstrap";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import data from "./data.js";
 import { Shoe } from "./main-shoe.js";
 import { Routes, Route, Link, useNavigate, Outlet } from "react-router-dom";
 import { Product } from "./product.js";
+import axios from "axios";
 
 function App() {
   const navigate = useNavigate();
-  let [shoes] = useState(data);
+  let [shoes, setShoes] = useState(data);
+  let [count, setCount] = useState(0);
+  let [loading, setLoading] = useState(false);
   let shoesdata = shoes.map((data) => (
     <Shoe id={data.id} title={data.title} price={data.price}></Shoe>
   ));
-  let product = shoes.map((data) => (
-    <Product
-      id={data.id}
-      title={data.title}
-      price={data.price}
-      content={data.content}
-    ></Product>
-  ));
+  function dataServer() {
+    setLoading(true);
+    if (count == 0) {
+      axios
+        .get("https://codingapple1.github.io/shop/data2.json")
+        .then((result) => {
+          let copy = [...shoes, ...result.data];
+          // copy.push(...result.data);
+          setShoes(copy);
+          setCount(count + 1);
+          setLoading(false);
+        })
+        .catch(() => {
+          console.log("실패");
+        });
+    } else if (count == 1) {
+      axios
+        .get("https://codingapple1.github.io/shop/data3.json")
+        .then((result) => {
+          let copy2 = [...shoes, ...result.data];
+          // copy.push(...result.data);
+          setShoes(copy2);
+          setCount(count + 1);
+          setLoading(false);
+        })
+        .catch(() => {
+          console.log("실패");
+        });
+    } else {
+      alert("더이상 상품이 없습니다");
+    }
+  }
   return (
     <div className="App">
       <Navbar bg="dark" variant="dark" className="app-navbar">
@@ -40,6 +67,15 @@ function App() {
               <div className="main-bg"></div>
               <div className="container">
                 <div className="row">{shoesdata}</div>
+                {count < 2 ? (
+                  <button
+                    onClick={() => {
+                      dataServer();
+                    }}
+                  >
+                    {loading == true ? "로딩중..." : "더보기"}
+                  </button>
+                ) : null}
               </div>
             </div>
           }
@@ -63,4 +99,32 @@ function Event() {
     </div>
   );
 }
+
+// function ServerData(props) {
+//   if (props.count == 0) {
+//     axios
+//       .get("https://codingapple1.github.io/shop/data2.json")
+//       .then((result) => {
+//         let copy = [...props.shoes, ...result.data];
+//         // copy.push(...result.data);
+//         props.setShoes(copy);
+//         props.setCount(props.count + 1);
+//       })
+//       .catch(() => {
+//         console.log("실패");
+//       });
+//   } else {
+//     axios
+//       .get("https://codingapple1.github.io/shop/data3.json")
+//       .then((result) => {
+//         let copy2 = [...props.shoes, ...result.data];
+//         // copy.push(...result.data);
+//         props.setShoes(copy2);
+//         props.setCount(props.count + 1);
+//       })
+//       .catch(() => {
+//         console.log("실패");
+//       });
+//   }
+// }
 export default App;
