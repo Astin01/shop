@@ -4,8 +4,9 @@ import { useEffect, useState } from "react";
 import data from "./data.js";
 import { Shoe } from "./main-shoe.js";
 import { Routes, Route, Link, useNavigate, Outlet } from "react-router-dom";
-import { Product } from "./product.js";
+import { Product } from "./routes/product.js";
 import axios from "axios";
+import Cart from "./routes/cart";
 
 function App() {
   const navigate = useNavigate();
@@ -86,6 +87,7 @@ function App() {
         </Route>
         <Route path="/detail/:parms" element={<Product shoes={shoes} />} />
         {/* <Route path="*" element={<div>없는페이지임</div>} /> */}
+        <Route path="/cart" element={<Cart />} />
       </Routes>
     </div>
   );
