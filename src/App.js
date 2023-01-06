@@ -7,6 +7,7 @@ import { Routes, Route, Link, useNavigate, Outlet } from "react-router-dom";
 import { Product } from "./routes/product.js";
 import axios from "axios";
 import Cart from "./routes/cart";
+import Recent from "./routes/recent";
 
 function App() {
   const navigate = useNavigate();
@@ -16,6 +17,9 @@ function App() {
   let shoesdata = shoes.map((data) => (
     <Shoe id={data.id} title={data.title} price={data.price}></Shoe>
   ));
+  useEffect(() => {
+    localStorage.setItem("watched", JSON.stringify([]));
+  }, []);
   function dataServer() {
     setLoading(true);
     if (count == 0) {
@@ -57,6 +61,7 @@ function App() {
             <Nav.Link onClick={() => navigate("/")}>Home</Nav.Link>
             <Nav.Link onClick={() => navigate("/detail")}>Product</Nav.Link>
             <Nav.Link onClick={() => navigate("/event")}>Event</Nav.Link>
+            <Nav.Link onClick={() => navigate("/cart")}>Cart</Nav.Link>
           </Nav>
         </Container>
       </Navbar>
@@ -78,6 +83,7 @@ function App() {
                   </button>
                 ) : null}
               </div>
+              <Recent></Recent>
             </div>
           }
         />

@@ -2,12 +2,22 @@ import "./../App.css";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { Nav } from "react-bootstrap";
+import { useDispatch } from "react-redux";
+import { inCart } from "../store";
 
 function Product(props) {
   let [popalert, setPopalert] = useState(true);
   let [input, setInput] = useState("");
   let [tab, setTab] = useState(0);
   let [fade, setFade] = useState("");
+  let dispatch = useDispatch();
+  useEffect(() => {
+    let watch = localStorage.getItem("watched");
+    let parseWatch = JSON.parse(watch);
+    parseWatch.push(product.id);
+    let jsonWatch = JSON.stringify(parseWatch);
+    localStorage.setItem("watched", jsonWatch);
+  }, []);
   useEffect(() => {
     setTimeout(() => {
       setFade("end");
@@ -51,7 +61,20 @@ function Product(props) {
           <p>{product.content}</p>
           <p>{product.price}</p>
           <input type="text" onChange={(e) => setInput(e.target.value)} />
-          <button className="btn btn-danger">주문하기</button>
+          <button
+            onClick={() =>
+              dispatch(
+                inCart({
+                  id: product.id,
+                  name: product.title,
+                  count: 1,
+                })
+              )
+            }
+            className="btn btn-danger"
+          >
+            주문하기
+          </button>
         </div>
       </div>
       <Nav variant="tabs" defaultActiveKey="link0">
