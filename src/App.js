@@ -1,13 +1,16 @@
 import "./App.css";
 import { Navbar, Container, Nav } from "react-bootstrap";
-import { useEffect, useState } from "react";
+import { lazy, Suspense, useEffect, useState } from "react";
 import data from "./data.js";
-import { Shoe } from "./main-shoe.js";
+import { Shoe } from "./Shoelist.js";
 import { Routes, Route, Link, useNavigate, Outlet } from "react-router-dom";
-import { Detail } from "./routes/product.js";
 import axios from "axios";
-import Cart from "./routes/cart";
 import Recent from "./routes/recent";
+import { useQuery } from "@tanstack/react-query";
+// import { Detail } from "./routes/detail";
+// import { Cart } from "./routes/cart";
+const Detail = lazy(async () => await import("./routes/detail.js"));
+const Cart = lazy(async () => await import("./routes/cart"));
 
 function App() {
   const navigate = useNavigate();
@@ -17,6 +20,11 @@ function App() {
   let shoesdata = shoes.map((data) => (
     <Shoe id={data.id} title={data.title} price={data.price}></Shoe>
   ));
+  let result = useQuery(["userid"], () =>
+    axios.get("https://codingapple1.github.io/userdata.json").then((a) => {
+      return a.data;
+    })
+  );
   useEffect(() => {
     if (!localStorage.getItem("watched")) {
       localStorage.setItem("watched", JSON.stringify([]));
@@ -55,48 +63,54 @@ function App() {
     }
   }
   return (
-    <div className="App">
+    <div div className="App">
       <Navbar bg="dark" variant="dark" className="app-navbar">
         <Container>
           <Navbar.Brand href="#home">Shop</Navbar.Brand>
           <Nav className="me-auto">
             <Nav.Link onClick={() => navigate("/")}>Home</Nav.Link>
-            <Nav.Link onClick={() => navigate("/detail")}>Detail</Nav.Link>
             <Nav.Link onClick={() => navigate("/event")}>Event</Nav.Link>
             <Nav.Link onClick={() => navigate("/cart")}>Cart</Nav.Link>
           </Nav>
+          <Nav className="ms-auto" style={{ color: "white" }}>
+            {result.isLoading && "로딩중"}
+            {result.error && "에러남"}
+            {result.data && result.data.name}
+          </Nav>
         </Container>
       </Navbar>
-      <Routes>
-        <Route
-          path="/"
-          element={
-            <div>
-              <div className="main-bg"></div>
-              <div className="container">
-                <div className="row">{shoesdata}</div>
-                {count < 2 ? (
-                  <button
-                    onClick={() => {
-                      dataServer();
-                    }}
-                  >
-                    {loading == true ? "로딩중..." : "더보기"}
-                  </button>
-                ) : null}
+      <Suspense>
+        <Routes>
+          <Route
+            path="/"
+            element={
+              <div>
+                <div className="main-bg"></div>
+                <div className="container">
+                  <div className="row">{shoesdata}</div>
+                  {count < 2 ? (
+                    <button
+                      onClick={() => {
+                        dataServer();
+                      }}
+                    >
+                      {loading == true ? "로딩중..." : "더보기"}
+                    </button>
+                  ) : null}
+                </div>
+                <Recent></Recent>
               </div>
-              <Recent></Recent>
-            </div>
-          }
-        />
-        <Route path="/event" element={<Event />}>
-          <Route path="one" element={<div>첫 주문시 양배추즙 서비스</div>} />
-          <Route path="two" element={<div>생일기념 쿠폰받기</div>} />
-        </Route>
-        <Route path="/detail/:parms" element={<Detail shoes={shoes} />} />
-        {/* <Route path="*" element={<div>없는페이지임</div>} /> */}
-        <Route path="/cart" element={<Cart />} />
-      </Routes>
+            }
+          />
+          <Route path="/event" element={<Event />}>
+            <Route path="one" element={<div>첫 주문시 양배추즙 서비스</div>} />
+            <Route path="two" element={<div>생일기념 쿠폰받기</div>} />
+          </Route>
+          <Route path="/detail/:parms" element={<Detail shoes={shoes} />} />
+          {/* <Route path="*" element={<div>없는페이지임</div>} /> */}
+          <Route path="/cart" element={<Cart />} />
+        </Routes>
+      </Suspense>
     </div>
   );
 }

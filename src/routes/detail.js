@@ -130,4 +130,4 @@ function TabContent({ tab }) {
     </div>
   );
 }
-export { Detail };
+export default Detail;

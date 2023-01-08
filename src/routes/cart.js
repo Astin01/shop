@@ -7,7 +7,13 @@ function Cart() {
     return state.cartItem;
   });
   let cartItem = item.map((data, i) => (
-    <Item number={i} id={data.id} name={data.name} count={data.count}></Item>
+    <Item
+      key={i}
+      number={i}
+      id={data.id}
+      name={data.name}
+      count={data.count}
+    ></Item>
   ));
   return (
     <Table>

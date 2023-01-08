@@ -1,4 +1,3 @@
-import { useEffect } from "react";
 import { Toast } from "react-bootstrap";
 import ListGroup from "react-bootstrap/ListGroup";
 function Recent({ shoes }) {
@@ -13,7 +12,7 @@ function Recent({ shoes }) {
     ));
   }
   return (
-    <Toast style={{ position: "absolute", top: "6vh", right: "0" }}>
+    <Toast style={{ position: "absolute", top: "55px", right: "0" }}>
       <Toast.Header>
         <img
           src="holder.js/20x20?text=%20"
