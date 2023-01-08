@@ -5,7 +5,7 @@ import { Nav } from "react-bootstrap";
 import { useDispatch } from "react-redux";
 import { inCart } from "../store";
 
-function Product(props) {
+function Detail(props) {
   let [popalert, setPopalert] = useState(true);
   let [input, setInput] = useState("");
   let [tab, setTab] = useState(0);
@@ -14,10 +14,10 @@ function Product(props) {
   useEffect(() => {
     let watch = localStorage.getItem("watched");
     let parseWatch = JSON.parse(watch);
-    parseWatch.push(product.id);
-    let jsonWatch = JSON.stringify(parseWatch);
+    parseWatch.push(product.title);
+    let jsonWatch = JSON.stringify([...new Set(parseWatch)]);
     localStorage.setItem("watched", jsonWatch);
-  }, []);
+  });
   useEffect(() => {
     setTimeout(() => {
       setFade("end");
@@ -130,4 +130,4 @@ function TabContent({ tab }) {
     </div>
   );
 }
-export { Product };
+export { Detail };

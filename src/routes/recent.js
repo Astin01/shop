@@ -1,5 +1,6 @@
+import { useEffect } from "react";
+import { Toast } from "react-bootstrap";
 import ListGroup from "react-bootstrap/ListGroup";
-
 function Recent({ shoes }) {
   let watch = localStorage.getItem("watched");
   let parseWatch = JSON.parse(watch);
@@ -11,7 +12,20 @@ function Recent({ shoes }) {
       </ListGroup.Item>
     ));
   }
-  return <>{recentGroup}</>;
+  return (
+    <Toast style={{ position: "absolute", top: "6vh", right: "0" }}>
+      <Toast.Header>
+        <img
+          src="holder.js/20x20?text=%20"
+          position="middle-end"
+          className="rounded me-2"
+          alt=""
+        />
+        <strong className="me-auto">Recent</strong>
+      </Toast.Header>
+      <Toast.Body>{recentGroup}</Toast.Body>
+    </Toast>
+  );
 }
 
 export default Recent;
